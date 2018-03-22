@@ -5,10 +5,16 @@
 #include "motor.h"
 #include "sensor.h"
 #include "rs3485.h"
+
+#include "communication.h"
+
 // TIM14,TIM16 PWM 频率设定
 #define INIHz 1000
 
 HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff);
+
+HAL_StatusTypeDef processResult = HAL_INI;
+
 
 void ResultSend(uint8_t* pbuff, HAL_StatusTypeDef result);
 void Main_Process(void);
@@ -32,7 +38,7 @@ static void IWDG_Config(void)
 int main(void)
 {
 
-    uint16_t cmdr;
+//    uint16_t cmdr;
 
     Delay_init();
 
@@ -45,43 +51,68 @@ int main(void)
 
     SENSOR_Init();
     Motor_Init();
-	
-		RS232_Init(UART1BUAD);
+
+    RS232_Init(UART1BUAD);
     RS485_Init(UART2BUAD);
-	
+
+
     while (1)
     {
-//        if(time3Usart1ms > 1000)
+#ifdef USE_UART2
+        if(UART2Time_1ms > 30)
+        {
+            RS485_Send_Data("XH-Wardrobe-V2.5", 0);
+            UART2Time_1ms = 0;
+
+            processResult = CheckProtocol(RS485, UART2RevData);
+
+            if(processResult == HAL_OK)
+            {
+                processResult = CheckProtocol(RS485, UART2RevData); //协议处理函数
+            }
+            else
+                processResult = HAL_BUSY;
+            UART2RXDataLenth = 0;
+//            ResultSend(RS485, UART2RevData, processResult);
+            BuffReset_API(UART2RevData, MAXCOMSIZE);
+        }
+#endif
+
+				
+//				 processResult = RS485_Send_Data("XH-Wardrobe-V2.5", 0);
+//
+////			   RS485_Send_Data1(rs485buf3,3);
+////        if(time3Usart1ms > 1000)
+////        {
+////            RS485_Send_Data(rs485buf, 6); //发送5个字节
+////            time3Usart1ms = 1;
+////        }
+
+////        RS485_Receive_Data(rs485buf);
+//        cmdr = rs485buf[0];
+////			cmdr = ((uint16_t)rs485buf[9]<<8)+rs485buf[10];
+//        switch(cmdr)
 //        {
-//            RS485_Send_Data(rs485buf, 6); //发送5个字节
-//            time3Usart1ms = 1;
+//        case 0x01:
+////           rs485TransmitData_API("aaaa", 0);
+//            break;
+//        case 0x02:
+////            rs485TransmitData_API("bbb", 0);
+//            break;
+//        case 0x03:
+////           rs485TransmitData_API("ccccccccc", 0);
+//            break;
+//        case 0x2011:
+
+//            break;
+//        case 0x2018:
+
+//            break;
+//        default:
+//            break;
 //        }
 
-//        RS485_Receive_Data(rs485buf);
-        cmdr = rs485buf[0];
-//			cmdr = ((uint16_t)rs485buf[9]<<8)+rs485buf[10];
-        switch(cmdr)
-        {
-        case 0x01:
-//           rs485TransmitData_API("aaaa", 0);
-            break;
-        case 0x02:
-//            rs485TransmitData_API("bbb", 0);
-            break;
-        case 0x03:
-//           rs485TransmitData_API("ccccccccc", 0);
-            break;
-        case 0x2011:
-
-            break;
-        case 0x2018:
-
-            break;
-        default:
-            break;
-        }
-
-        rs485buf[0]=0x00;
+//        rs485buf[0]=0x00;
 
     }
 }

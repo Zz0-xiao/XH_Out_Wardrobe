@@ -50,11 +50,12 @@ HAL_StatusTypeDef CheckCrc(uint8_t *p)
 参数：USART_TypeDef *uart 串口号 uint8_t* pbuff 接收全部数据，不偏移
 返回：HAL_StatusTypeDef communication.h
 *******************************/
-HAL_StatusTypeDef CheckProtocol(ComPort comPort, uint8_t* pbuff)
+HAL_StatusTypeDef CheckProtocol(USART_TypeDef* huart, uint8_t* pbuff)
 {
     int i;
     uint16_t lenth;
-    if(UART1RXDataLenth < HEADSIZE) return HAL_HEADERROR;
+    if(UART1RXDataLenth < HEADSIZE)
+        return HAL_HEADERROR;
     for(i = 0; i < HEADSIZE; i++)
     {
         if(pbuff[i] != HEAD[i])
@@ -62,14 +63,14 @@ HAL_StatusTypeDef CheckProtocol(ComPort comPort, uint8_t* pbuff)
     }
     lenth = (pbuff[HEADSIZE] << 24) + (pbuff[HEADSIZE + 1] << 26) + (pbuff[HEADSIZE + 2] << 8) + pbuff[HEADSIZE + 3];
 
-    if(comPort == HAL_USART1)
+    if( huart == USART1)
     {
 #ifdef USE_UART1
         if(UART1RXDataLenth - 9 < lenth)
             return HAL_BUSY;
 #endif
     }
-    else if(comPort == HAL_USART2)
+    else if(huart == USART2)
     {
 #ifdef USE_UART2
         if(UART2RXDataLenth - 9 < lenth)
@@ -196,7 +197,6 @@ void	UART_Initial(USART_TypeDef* huart, int buad)
 //	}
 //}
 
-
 /*******************************
 名称：ResultSend();
 功能：回复函数；
@@ -218,22 +218,22 @@ void	UART_Initial(USART_TypeDef* huart, int buad)
 			PARAMETER sendmode 发送模式，具体参数见结构体
 返回：HAL_StatusTypeDef communication.h
 *******************************/
-HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t datasize)
+HAL_StatusTypeDef TransmitData_API(USART_TypeDef* huart, const void* data, uint16_t datasize)
 {
     uint16_t i, timeout;
     uint8_t* pdata = (uint8_t*) data;
-    USART_TypeDef* huart = USART1;
+//    USART_TypeDef* huart = USART1;
     if(datasize == 0)
         datasize = strlen((char*)pdata);
 
 //		sendLen = datasize;
 //			memcpy(SendBuff,pdata,sendLen);
-		
-    if(comPort == HAL_USART1)
-        huart = USART1;
-    if(comPort == HAL_USART2)
-        huart = USART2;
-		
+
+//    if(comPort == HAL_USART1)
+//        huart = USART1;
+//    if(comPort == HAL_USART2)
+//        huart = USART2;
+
     for(i = 0; i < datasize; i++)
     {
         USART_SendData(huart, pdata[i]);
@@ -253,7 +253,6 @@ HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t d
     return HAL_OK;
 }
 
-
 /************************END******************************/
 /*******************************
 名称：UART_TransmitData_SDSES()
@@ -266,7 +265,7 @@ HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t d
 *******************************/
 uint8_t SendBuff[512];
 
-HAL_StatusTypeDef TransmitData_SDSES(ComPort comPort, uint32_t len, uint16_t cmdr, uint8_t state, const void* data)
+HAL_StatusTypeDef TransmitData_SDSES(USART_TypeDef* huart, uint32_t len, uint16_t cmdr, uint8_t state, const void* data)
 {
     uint16_t i, crc16 = 0, sendLen = 0;
     uint8_t lenth[4];
@@ -309,7 +308,7 @@ HAL_StatusTypeDef TransmitData_SDSES(ComPort comPort, uint32_t len, uint16_t cmd
     crc[1] = crc16 & 0xFF;
     memcpy(SendBuff + sendLen, crc, 2);
     sendLen += 2;
-    TransmitData_API(comPort, SendBuff, sendLen);
+    TransmitData_API(huart, SendBuff, sendLen);
     return HAL_OK;
 }
 

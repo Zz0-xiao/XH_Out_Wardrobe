@@ -2,6 +2,7 @@
 #define __RS3485_H
 
 #include "stm32f0xx.h"
+#include "communication.h"
 
 #ifdef USE_UART2
 extern uint8_t UART2RevData[MAXCOMSIZE];
@@ -15,10 +16,8 @@ extern uint16_t UART2RXDataLenth;//UART1接受数据长度
 
 
 void RS485_Init(uint32_t buad);
-//void RS485_Send_Data(uint8_t *buf,uint8_t len);
-//void RS485_Receive_Data(uint8_t *buf );
-
-
+HAL_StatusTypeDef RS485_Send_Data(const void* data, uint16_t datasize);
+//void RS485_Send_Data1(uint8_t *buf, uint8_t len);
 
 #endif
 

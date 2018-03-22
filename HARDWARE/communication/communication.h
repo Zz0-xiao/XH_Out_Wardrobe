@@ -5,11 +5,11 @@
 
 /**********************结构体定义区********************/
 //通讯端口定义
-typedef enum
-{
-    HAL_USART1 = 0,
-    HAL_USART2,
-} ComPort;
+//typedef enum
+//{
+//    HAL_USART1 = 0,
+//    HAL_USART2,
+//} ComPort;
 
 //全局标志位结构体
 typedef enum
@@ -95,8 +95,8 @@ void	UART_Initial(USART_TypeDef* huart, int buad);
 				HAL_TIMEOUT  = reserve
 		Size 接收数据大小
 *******************************/
-HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t datasize );
-
+//HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t datasize );
+HAL_StatusTypeDef TransmitData_API(USART_TypeDef* huart, const void* data, uint16_t datasize);
 
 /*******************************
 名称：TransmitData_SDSES);;
@@ -108,9 +108,11 @@ HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t d
 返回：HAL_StatusTypeDef
 		Size 接收数据大小
 *******************************/
-HAL_StatusTypeDef TransmitData_SDSES(ComPort comPort, uint32_t len, uint16_t cmdr, uint8_t state, const void* data);
-
+//HAL_StatusTypeDef TransmitData_SDSES(ComPort comPort, uint32_t len, uint16_t cmdr, uint8_t state, const void* data);
+HAL_StatusTypeDef TransmitData_SDSES(USART_TypeDef* huart, uint32_t len, uint16_t cmdr, uint8_t state, const void* data);
 
 HAL_StatusTypeDef CheckCrc(uint8_t *p);
+
+HAL_StatusTypeDef CheckProtocol(USART_TypeDef* huart, uint8_t* pbuff);
 
 #endif
