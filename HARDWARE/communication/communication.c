@@ -264,7 +264,7 @@ HAL_StatusTypeDef TransmitData_API(USART_TypeDef* huart, const void* data, uint1
 返回：HAL_StatusTypeDef communication.h
 *******************************/
 uint8_t SendBuff[512];
-
+/////注意，校验的时候没有data数据，只有长度，命令，
 HAL_StatusTypeDef TransmitData_SDSES(USART_TypeDef* huart, uint32_t len, uint16_t cmdr, uint8_t state, const void* data)
 {
     uint16_t i, crc16 = 0, sendLen = 0;

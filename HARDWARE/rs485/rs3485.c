@@ -50,26 +50,34 @@ void USART2_IRQHandler(void)
 //RS485查询接收到的数据
 //buf:接收缓存首地址
 //len:读到的数据长度
-void RS485_Receive_Data(uint8_t *buf)
-{
-    uint8_t rxlen = UART2RXDataLenth;
-    uint8_t i = 0;
-    if(rxlen == UART2RXDataLenth && rxlen) //接收到了数据,且接收完成了
-    {
-        for(i = 0; i < rxlen; i++)
-        {
-            buf[i] = UART2RevData[i];
-        }
-        UART2RXDataLenth = 0;		//清零
-        BuffReset_API(UART2RevData, MAXCOMSIZE);
-    }
-}
+//void RS485_Receive_Data(uint8_t *buf)
+//{
+//    uint8_t rxlen = UART2RXDataLenth;
+//    uint8_t i = 0;
+//    if(rxlen == UART2RXDataLenth && rxlen) //接收到了数据,且接收完成了
+//    {
+//        for(i = 0; i < rxlen; i++)
+//        {
+//            buf[i] = UART2RevData[i];
+//        }
+//        UART2RXDataLenth = 0;		//清零
+//        BuffReset_API(UART2RevData, MAXCOMSIZE);
+//    }
+//}
 
-HAL_StatusTypeDef RS485_Send_Data(const void* data, uint16_t datasize)
+HAL_StatusTypeDef RS485_Data_API(const void* data, uint16_t datasize)
 {
     HAL_StatusTypeDef temp;
     RS485EN_H();//
     temp = TransmitData_API(RS485, data, datasize);
+    RS485EN_L();//默认为接收模式
+    return temp;
+}
+HAL_StatusTypeDef RS485_Data_SDSES(uint32_t len, uint16_t cmdr, uint8_t state, const void* data)
+{
+    HAL_StatusTypeDef temp;
+    RS485EN_H();//
+    temp = TransmitData_SDSES(RS485, len, cmdr, state, data);
     RS485EN_L();//默认为接收模式
     return temp;
 }

@@ -35,14 +35,10 @@ static void IWDG_Config(void)
 
 int main(void)
 {
-
-//    uint16_t cmdr;
     Delay_init();
-
     TIM3_Initial();
     TIM14_Initial(INIHz);
     TIM16_Initial(INIHz);
-//    UART_TransmitData_API(USART1, "XH-Wardrobe-V2.5", 0, SENDNOPROTOCOL);
 //    IWDG_Config();
 
     SENSOR_Init();
@@ -51,37 +47,25 @@ int main(void)
     RS232_Init(UART1BUAD);
     RS485_Init(UART2BUAD);
 
-    RS485_Send_Data("XH-Wardrobe-V2.5", 0);
+    RS485_Data_API("XH-Wardrobe-V2.5", 0);
 
     while (1)
     {
         if(UART2Time_1ms > 30)
         {
             UART2Time_1ms = 1;
-            Protocol_Process(UART2RevData);
+
+            processResult = CheckProtocol(RS485, UART2RevData);
+
+            if(processResult == HAL_OK)
+            {
+                processResult = Protocol_Process(UART2RevData);//协议处理函数
+            }
+//            Protocol_Process(UART2RevData);
             UART2RXDataLenth = 0;
             BuffReset_API(UART2RevData, MAXCOMSIZE);
-
-        }
-
-//#ifdef USE_UART2
-//        if(UART2Time_1ms > 30)
-//        {
-//            UART2Time_1ms = 1;
-////            RS485_Send_Data("XH-Wardrobe-V2.5", 0);
-//            processResult = CheckProtocol(RS485, UART2RevData);
-
-//            if(processResult == HAL_OK)
-//            {
-//                processResult = Protocol_Process(UART2RevData);//协议处理函数
-//            }
-//            else
-//                processResult = HAL_BUSY;
-//            UART2RXDataLenth = 0;
-
-//            BuffReset_API(UART2RevData, MAXCOMSIZE);
-//        }
-//#endif
+        }				
+        RS485_Data_SDSES(1, 0xA100, OPFAILED, "123");
     }
 }
 
@@ -93,31 +77,30 @@ int main(void)
 *******************************/
 //const uint32_t DEV_ID = 0xffffffff;//初始必须为ffffffff,否则写入不成功
 //53 44 73 45 73 00 00 00 09 21 01 ff ff 04 00 2a 82 da
+//53 44 73 45 73 00 00 00 09 20 02 ff ff 04 00 2a F4 5B
 HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
 {
     HAL_StatusTypeDef processResult;
     uint16_t cmdr;
 
-//    cmdr = ((uint16_t)pbuff[9] << 8) + pbuff[10];
-    cmdr = ((uint16_t)pbuff[0]<< 8)+pbuff[1];
-	
-    cmdr = pbuff[0];
+    cmdr = ((uint16_t)pbuff[9] << 8) + pbuff[10];
+
     switch(cmdr)
     {
-    case 0x0001:
-        RS485_Send_Data("11ab", 0);
+    case 0x2101:
+        RS485_Data_API("11ab", 0);
         break;
-    case 0x0002:
-        RS485_Send_Data("22cd", 0);
+    case 0x2002:
+        RS485_Data_API("22cd", 0);
         break;
-    case 0x0003:
-        RS485_Send_Data("33ww", 0);
+    case 0x2003:
+        RS485_Data_API("33ww", 0);
         break;
-    case 0x2001:
-        RS485_Send_Data("444d", 0);
+    case 0x01:
+        RS485_Data_API("444d", 0);
         break;
-    case 0x2102:
-        RS485_Send_Data("55g5", 0);
+    case 0x02:
+        RS485_Data_API("55g5", 0);
         break;
     default:
         break;
