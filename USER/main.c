@@ -21,8 +21,6 @@ void Main_Process(void);
 void Reset(void);
 void MotorTime(void);
 
-uint8_t rs485buf[MAXCOMSIZE];
-//uint8_t rs485buf3[10] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
 static void IWDG_Config(void)
 {
@@ -61,11 +59,10 @@ int main(void)
             {
                 processResult = Protocol_Process(UART2RevData);//协议处理函数
             }
-//            Protocol_Process(UART2RevData);
+
             UART2RXDataLenth = 0;
             BuffReset_API(UART2RevData, MAXCOMSIZE);
         }
-        RS485_Data_SDSES(1, 0xA100, OPFAILED, "");
     }
 }
 
@@ -75,7 +72,6 @@ int main(void)
 参数：协议数据缓存区pbuff
 返回：处理结果，可以在communication.h中添加
 *******************************/
-//const uint32_t DEV_ID = 0xffffffff;//初始必须为ffffffff,否则写入不成功
 //53 44 73 45 73 00 00 00 09 21 01 ff ff 04 00 2a 82 da
 //53 44 73 45 73 00 00 00 09 20 02 ff ff 04 00 2a F4 5B
 //53 44 73 45 73 00 00 00 06 A1 00 6D 00 2C 4C 2A D4 15 CD 01 00 00 06 A1 00 6D 00 2C 31
