@@ -1,10 +1,11 @@
 #include "rs3485.h"
 #include "timer.h"
 #include "delay.h"
+#include "utility.h"
 ////接收缓存区
-uint8_t RS485_RX_BUF[64];  	//接收缓冲,最大64个字节.
+//uint8_t RS485_RX_BUF[MAXCOMSIZE];  	//接收缓冲,最大64个字节.
 ////接收到的数据长度
-uint8_t RS485_RX_CNT = 0;
+//uint8_t RS485_RX_CNT = 0;
 
 #ifdef USE_UART2
 uint8_t UART2RevData[MAXCOMSIZE];
@@ -15,7 +16,6 @@ uint16_t UART2RXDataLenth = 0;
 void USART2_IRQHandler(void)
 {
     uint8_t tempdata;
-
 //    USART_ClearITPendingBit(USART1, USART_IT_ORE); //ORE中断清除 否则大量数据时会出现死机
     if(USART_GetITStatus(USART2, USART_IT_RXNE) != RESET)
     {
@@ -32,8 +32,6 @@ void USART2_IRQHandler(void)
             UART2Time_1ms = 1;//启动计时
     }
 }
-
-
 //void USART2_IRQHandler(void)
 //{
 //    uint8_t res;
@@ -49,26 +47,32 @@ void USART2_IRQHandler(void)
 //    }
 //}
 
-
 //RS485查询接收到的数据
 //buf:接收缓存首地址
 //len:读到的数据长度
 void RS485_Receive_Data(uint8_t *buf)
 {
-    uint8_t rxlen = RS485_RX_CNT;
+    uint8_t rxlen = UART2RXDataLenth;
     uint8_t i = 0;
-//    *len = 0;				//默认为0
-    Delay_ms(10);		//等待10ms,连续超过10ms没有接收到一个数据,则认为接收结束
-    if(rxlen == RS485_RX_CNT && rxlen) //接收到了数据,且接收完成了
+    if(rxlen == UART2RXDataLenth && rxlen) //接收到了数据,且接收完成了
     {
         for(i = 0; i < rxlen; i++)
         {
-            buf[i] = RS485_RX_BUF[i];
+            buf[i] = UART2RevData[i];
         }
-        RS485_RX_CNT = 0;		//清零
+        UART2RXDataLenth = 0;		//清零
+        BuffReset_API(UART2RevData, MAXCOMSIZE);
     }
 }
 
+HAL_StatusTypeDef RS485_Send_Data(const void* data, uint16_t datasize)
+{
+    HAL_StatusTypeDef temp;
+    RS485EN_H();//
+    temp = TransmitData_API(RS485, data, datasize);
+    RS485EN_L();//默认为接收模式
+    return temp;
+}
 
 void RS485_Init(uint32_t buad)
 {
@@ -88,40 +92,25 @@ void RS485_Init(uint32_t buad)
 }
 
 
-HAL_StatusTypeDef RS485_Send_Data(const void* data, uint16_t datasize)
-{
-    HAL_StatusTypeDef temp;
-    RS485EN_H();//
-    temp = TransmitData_API(RS485, data, datasize);
-    RS485EN_L();//默认为接收模式
-    return temp;
-}
-
-
-
 
 
 //RS485发送len个字节.
 //buf:发送区首地址
 //len:发送的字节数(为了和本代码的接收匹配,这里建议不要超过64个字节)
-void RS485_Send_Data1(uint8_t *buf, uint8_t len)
-{
-    uint8_t t;
-    RS485EN_H();	//设置为发送模式
-    for(t = 0; t < len; t++)		//循环发送数据
-    {
-        while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-        USART_SendData(USART2, buf[t]);
-    }
+//void RS485_Send_Data1(uint8_t *buf, uint8_t len)
+//{
+//    uint8_t t;
+//    RS485EN_H();	//设置为发送模式
+//    for(t = 0; t < len; t++)		//循环发送数据
+//    {
+//        while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
+//        USART_SendData(USART2, buf[t]);
+//    }
 
-    while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
-    RS485_RX_CNT = 0;
-    RS485EN_L();				//设置为接收模式
-}
-
-
-
-
+//    while(USART_GetFlagStatus(USART2, USART_FLAG_TC) == RESET);
+//    RS485_RX_CNT = 0;
+//    RS485EN_L();				//设置为接收模式
+//}
 
 
 

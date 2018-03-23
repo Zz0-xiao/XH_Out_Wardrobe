@@ -21,7 +21,7 @@ void Main_Process(void);
 void Reset(void);
 void MotorTime(void);
 
-uint8_t rs485buf[5]  ;
+uint8_t rs485buf[MAXCOMSIZE];
 //uint8_t rs485buf3[10] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
 static void IWDG_Config(void)
@@ -55,14 +55,15 @@ int main(void)
 
     while (1)
     {
-//        if(UART2Time_1ms > 30)
-//        {
-//            UART2Time_1ms = 1;
+        if(UART2Time_1ms > 30)
+        {
+            UART2Time_1ms = 1;
             Protocol_Process(UART2RevData);
-//            UART2RXDataLenth = 0;
-//        }
-			
-			
+            UART2RXDataLenth = 0;
+            BuffReset_API(UART2RevData, MAXCOMSIZE);
+
+        }
+
 //#ifdef USE_UART2
 //        if(UART2Time_1ms > 30)
 //        {
@@ -96,25 +97,26 @@ HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
 {
     HAL_StatusTypeDef processResult;
     uint16_t cmdr;
-
+	
 //    cmdr = ((uint16_t)pbuff[9] << 8) + pbuff[10];
-    cmdr = pbuff[1];
+    cmdr = ((uint16_t)pbuff[0] << 8) + pbuff[1];
+
     switch(cmdr)
     {
+    case 0x2001:
+        RS485_Send_Data("11ab", 0);
+        break;
+    case 0x2002:
+        RS485_Send_Data("22cd", 0);
+        break;
+    case 0x2003:
+        RS485_Send_Data("33ww", 0);
+        break;
     case 0x01:
-        RS485_Send_Data("111", 0);
+        RS485_Send_Data("444d", 0);
         break;
     case 0x02:
-        RS485_Send_Data("222", 0);
-        break;
-    case 0x03:
-        RS485_Send_Data("333", 0);
-        break;
-    case 0x2011:
-        RS485_Send_Data("444", 0);
-        break;
-    case 0x2018:
-        RS485_Send_Data("555", 0);
+        RS485_Send_Data("55g5", 0);
         break;
     default:
         break;

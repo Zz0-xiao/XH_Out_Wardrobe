@@ -178,7 +178,7 @@
           <Type>0</Type>
           <LineNumber>54</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134222416</Address>
+          <Address>134222520</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -188,6 +188,22 @@
           <Filename>C:\Users\Administrator\Desktop\xh_鍙戣。鏌?demo\stm32f030Template\USER\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\Template\main.c\54</Expression>
+        </Bp>
+        <Bp>
+          <Number>1</Number>
+          <Type>0</Type>
+          <LineNumber>103</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134218648</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>C:\Users\Administrator\Desktop\xh_鍙戣。鏌?demo\stm32f030Template\USER\main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\Template\main.c\103</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -199,7 +215,7 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>RS485_RX_BUF[0]</ItemText>
+          <ItemText>rs485buf[0]</ItemText>
         </Ww>
         <Ww>
           <count>2</count>

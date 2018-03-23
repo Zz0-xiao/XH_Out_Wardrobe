@@ -10,7 +10,7 @@ extern uint16_t UART2Time_1ms;
 extern uint16_t UART2RXDataLenth;//UART1接受数据长度
 #endif
 
-extern uint8_t RS485_RX_BUF[64];
+//extern uint8_t RS485_RX_BUF[MAXCOMSIZE];
 	
 
 //模式控制

@@ -224,7 +224,7 @@ HAL_StatusTypeDef TransmitData_API(USART_TypeDef* huart, const void* data, uint1
     uint8_t* pdata = (uint8_t*) data;
 //    USART_TypeDef* huart = USART1;
     if(datasize == 0)
-        datasize = strlen((char*)pdata);
+        datasize = strlen((char*)pdata)+1;
 
 //		sendLen = datasize;
 //			memcpy(SendBuff,pdata,sendLen);
