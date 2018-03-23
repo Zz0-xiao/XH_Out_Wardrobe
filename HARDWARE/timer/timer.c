@@ -138,35 +138,31 @@ void TIM14_Initial(uint16_t periodHz)
 }
 
 
-//uint16_t time3Debouncet1ms = 1; //按键消抖
 volatile int delayCounter = 0;//仅用于HAL_Delay()精确定时器函数，勿改变
 uint32_t time2Counter1ms = 1;//外设不占用延时函数执行间隔
+//uint16_t time3Usart1ms=1;
 
 void TIM3_IRQHandler(void)
 {
-    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) //?? TIM3 ????????  
+    if (TIM_GetITStatus(TIM3, TIM_IT_Update) != RESET) //?? TIM3 ????????
     {
         TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 //        if(time3Usart1ms > 0)
 //            time3Usart1ms++;
+#ifdef USE_UART1
+        if(UART1Time_1ms > 0)
+            UART1Time_1ms++;
+#endif
 
-//        if(time2Counter1ms < 10000)time2Counter1ms++;
-//				
-//        if(delayCounter)delayCounter--;							
-	#ifdef USE_UART1
-	if(UART1Time_1ms>0)
-		UART1Time_1ms++;
-	#endif
-	
-	#ifdef USE_UART2
-	if(UART2Time_1ms>0)
-		UART2Time_1ms++;
-	#endif
-	
-	if(time2Counter1ms<10000)
-		time2Counter1ms++;
-	if(delayCounter)delayCounter--;	
-	
+#ifdef USE_UART2
+        if(UART2Time_1ms > 0)
+            UART2Time_1ms++;
+#endif
+
+        if(time2Counter1ms < 10000)
+            time2Counter1ms++;
+        if(delayCounter)delayCounter--;
+
     }
 }
 

@@ -54,8 +54,8 @@ HAL_StatusTypeDef CheckProtocol(USART_TypeDef* huart, uint8_t* pbuff)
 {
     int i;
     uint16_t lenth;
-    if(UART1RXDataLenth < HEADSIZE)
-        return HAL_HEADERROR;
+//    if(UART1RXDataLenth < HEADSIZE)
+//        return HAL_HEADERROR;
     for(i = 0; i < HEADSIZE; i++)
     {
         if(pbuff[i] != HEAD[i])
@@ -77,8 +77,8 @@ HAL_StatusTypeDef CheckProtocol(USART_TypeDef* huart, uint8_t* pbuff)
             return HAL_BUSY;
 #endif
     }
-//	if(CheckCrc(pbuff)!= HAL_OK)
-//		return HAL_CRCERROR;
+	if(CheckCrc(pbuff)!= HAL_OK)
+		return HAL_CRCERROR;
     return HAL_OK;
 }
 

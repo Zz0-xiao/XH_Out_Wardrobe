@@ -6,19 +6,23 @@
 
 #ifdef USE_UART2
 extern uint8_t UART2RevData[MAXCOMSIZE];
-extern int UART2Time_1ms;
+extern uint16_t UART2Time_1ms;
 extern uint16_t UART2RXDataLenth;//UART1接受数据长度
 #endif
+
+extern uint8_t RS485_RX_BUF[64];
+	
 
 //模式控制
 #define RS485EN_L()	 	  GPIO_ResetBits(GPIOF, GPIO_Pin_4)
 #define RS485EN_H()  		GPIO_SetBits(GPIOF, GPIO_Pin_4)
 
-
 void RS485_Init(uint32_t buad);
 HAL_StatusTypeDef RS485_Send_Data(const void* data, uint16_t datasize);
-//void RS485_Send_Data1(uint8_t *buf, uint8_t len);
+void RS485_Send_Data1(uint8_t *buf, uint8_t len);
 
+void RS485_Receive_Data(uint8_t *buf);
+	
 #endif
 
 

@@ -4,13 +4,14 @@
 #include "stm32f0xx.h"
 
 /**********************结构体定义区********************/
-//通讯端口定义
-//typedef enum
-//{
-//    HAL_USART1 = 0,
-//    HAL_USART2,
-//} ComPort;
 
+//	#define RVERSION_SDSES 0x7F01
+//	#define RHEART_SDSES 0x7F02
+//	#define RSENDOUT_SDSES 0x2100
+//	#define RMOTOR_SDSES 0x2101
+//	#define RSENSOR_SDSES 0x2102
+//
+//
 //全局标志位结构体
 typedef enum
 {
@@ -36,7 +37,7 @@ typedef enum
 
     HAL_ENABLE,
     HAL_DISABLE,
-  
+
 } HAL_StatusTypeDef;
 //数据传输标志位结构体
 //typedef enum
@@ -63,6 +64,7 @@ typedef enum
 //串口1波特率
 #define UART1BUAD 9600
 //USART2使能
+
 #define USE_UART2
 //串口1波特率
 #define UART2BUAD 9600

@@ -1,12 +1,10 @@
 #include "rs232.h"
-#include "communication.h"
 #include "timer.h"
-
 
 //串口超时全局函数
 #ifdef USE_UART1
 uint8_t UART1RevData[MAXCOMSIZE];
-int UART1Time_1ms = 0;
+uint16_t UART1Time_1ms = 1;
 uint16_t UART1RXDataLenth = 0;
 #endif
 
