@@ -5,19 +5,21 @@
 #include "motor.h"
 #include "sensor.h"
 #include "rs3485.h"
+
+#include "communication.h"
+
 // TIM14,TIM16 PWM 频率设定
 #define INIHz 1000
 
 HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff);
 
+HAL_StatusTypeDef processResult = HAL_INI;
+
+
 void ResultSend(uint8_t* pbuff, HAL_StatusTypeDef result);
 void Main_Process(void);
 void Reset(void);
 void MotorTime(void);
-
-
-uint8_t rs485buf[5]  ;
-uint8_t rs485buf3[10] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
 
 
 static void IWDG_Config(void)
@@ -31,58 +33,36 @@ static void IWDG_Config(void)
 
 int main(void)
 {
-
-    uint16_t cmdr;
-
     Delay_init();
-
     TIM3_Initial();
     TIM14_Initial(INIHz);
     TIM16_Initial(INIHz);
-//    UART_Initial(USART1, 9600);
-//    UART_TransmitData_API(USART1, "XH-Wardrobe-V2.5", 0, SENDNOPROTOCOL);
 //    IWDG_Config();
 
     SENSOR_Init();
     Motor_Init();
-	
-		RS232_Init(UART1BUAD);
+
+    RS232_Init(UART1BUAD);
     RS485_Init(UART2BUAD);
-	
+
+    RS485_Data_API("XH-Wardrobe-V2.5", 0);
+
     while (1)
     {
-//        if(time3Usart1ms > 1000)
-//        {
-//            RS485_Send_Data(rs485buf, 6); //发送5个字节
-//            time3Usart1ms = 1;
-//        }
-
-//        RS485_Receive_Data(rs485buf);
-        cmdr = rs485buf[0];
-//			cmdr = ((uint16_t)rs485buf[9]<<8)+rs485buf[10];
-        switch(cmdr)
+        if(UART2Time_1ms > 30)
         {
-        case 0x01:
-//           rs485TransmitData_API("aaaa", 0);
-            break;
-        case 0x02:
-//            rs485TransmitData_API("bbb", 0);
-            break;
-        case 0x03:
-//           rs485TransmitData_API("ccccccccc", 0);
-            break;
-        case 0x2011:
+            UART2Time_1ms = 1;
 
-            break;
-        case 0x2018:
+            processResult = CheckProtocol(RS485, UART2RevData);
 
-            break;
-        default:
-            break;
+            if(processResult == HAL_OK)
+            {
+                processResult = Protocol_Process(UART2RevData);//协议处理函数
+            }
+
+            UART2RXDataLenth = 0;
+            BuffReset_API(UART2RevData, MAXCOMSIZE);
         }
-
-        rs485buf[0]=0x00;
-
     }
 }
 
@@ -92,73 +72,38 @@ int main(void)
 参数：协议数据缓存区pbuff
 返回：处理结果，可以在communication.h中添加
 *******************************/
-//const uint32_t DEV_ID = 0xffffffff;//初始必须为ffffffff,否则写入不成功
+//53 44 73 45 73 00 00 00 09 21 01 ff ff 04 00 2a 82 da
+//53 44 73 45 73 00 00 00 09 20 02 ff ff 04 00 2a F4 5B
+//53 44 73 45 73 00 00 00 06 A1 00 6D 00 2C 4C 2A D4 15 CD 01 00 00 06 A1 00 6D 00 2C 31
+HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
+{
+    HAL_StatusTypeDef processResult;
+    uint16_t cmdr;
 
-//HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
-//{
-//	HAL_StatusTypeDef processResult;
-//	uint16_t cmdr;
-//	uint8_t senddata;
-//	uint32_t setID;
-//	uint8_t sensorStatus[11];
-//	int i = 0;
-//	cmdr = ((uint16_t)pbuff[9]<<8)+pbuff[10];
-//	indexKHz = 0;
-//	cV = 0;
-//	switch(cmdr)
-//	{
-//		case RSENDOUT_SDSES:
-//			processResult = SendOut(&pbuff[11]);
-//			break;
-//		case RMOTOR_SDSES:
-//			processResult = Debug_Process(&pbuff[11]);
-//			break;
-//		case RSENSOR_SDSES:
-//			for(i=0;i<6;i++)
-//			{
-//				if(GPIO_ReadInputDataBit(VSENSOR[i].GPIOx,VSENSOR[i].GPIO_Pin)==Bit_RESET)
-//					sensorStatus[i]='1'+i;
-//				else
-//					sensorStatus[i]='0';
-//			}
-//			for(i=6;i<8;i++)
-//			{
-//				if(GPIO_ReadInputDataBit(HSENSOR[i-6].GPIOx,HSENSOR[i-6].GPIO_Pin)==Bit_RESET)
-//					sensorStatus[i]='1'+i-6;
-//				else
-//					sensorStatus[i]='0';
-//			}
-//			for(i=8;i<11;i++)
-//			{
-//				if(GPIO_ReadInputDataBit(INFRARE[i-8].GPIOx,INFRARE[i-8].GPIO_Pin)==Bit_SET)
-//					sensorStatus[i]='1'+i-8;
-//				else
-//					sensorStatus[i]='0';
-//			}
-//			UART_TransmitData_API(USART1,"\r\nVERTICAL:",0,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,sensorStatus,6,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,"\r\nHORIZENTAL:",0,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,sensorStatus+6,2,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,"\r\nINFRARE:",0,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,sensorStatus+8,3,SENDNOPROTOCOL);
-//			break;
-//		case 0x2011:
-//			senddata = motorCurrentPosition[MOTORV]+'0';
-//			UART_TransmitData_API(USART1,"MOTORV POSITION",0,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,&senddata,1,SENDNOPROTOCOL);
-//			UART_TransmitData_API(USART1,"MOTORV END",0,SENDNOPROTOCOL);
-//		  motorErrorFlag = MOTOR_OK;
-//			processResult = HAL_OK;
-//			break;
-//		case 0x2018:
-//			UART_TransmitData_API(USART1,"XH-Wardrobe-V2.5",0,SENDNOPROTOCOL);
-//			break;
-//		default:
-//			break;
-//	}
-//	return processResult;
-//    return HAL_OK;
-//}
+    cmdr = ((uint16_t)pbuff[9] << 8) + pbuff[10];
+
+    switch(cmdr)
+    {
+    case 0x2101:
+        RS485_Data_API("11ab", 0);
+        break;
+    case 0x2002:
+        RS485_Data_API("22cd", 0);
+        break;
+    case 0x2003:
+        RS485_Data_API("33ww", 0);
+        break;
+    case 0x01:
+        RS485_Data_API("444d", 0);
+        break;
+    case 0x02:
+        RS485_Data_API("55g5", 0);
+        break;
+    default:
+        break;
+    }
+    return processResult;
+}
 
 
 /*******************************

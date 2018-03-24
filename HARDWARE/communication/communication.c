@@ -50,11 +50,12 @@ HAL_StatusTypeDef CheckCrc(uint8_t *p)
 参数：USART_TypeDef *uart 串口号 uint8_t* pbuff 接收全部数据，不偏移
 返回：HAL_StatusTypeDef communication.h
 *******************************/
-HAL_StatusTypeDef CheckProtocol(ComPort comPort, uint8_t* pbuff)
+HAL_StatusTypeDef CheckProtocol(USART_TypeDef* huart, uint8_t* pbuff)
 {
     int i;
     uint16_t lenth;
-    if(UART1RXDataLenth < HEADSIZE) return HAL_HEADERROR;
+//    if(UART1RXDataLenth < HEADSIZE)
+//        return HAL_HEADERROR;
     for(i = 0; i < HEADSIZE; i++)
     {
         if(pbuff[i] != HEAD[i])
@@ -62,22 +63,22 @@ HAL_StatusTypeDef CheckProtocol(ComPort comPort, uint8_t* pbuff)
     }
     lenth = (pbuff[HEADSIZE] << 24) + (pbuff[HEADSIZE + 1] << 26) + (pbuff[HEADSIZE + 2] << 8) + pbuff[HEADSIZE + 3];
 
-    if(comPort == HAL_USART1)
+    if( huart == USART1)
     {
 #ifdef USE_UART1
         if(UART1RXDataLenth - 9 < lenth)
             return HAL_BUSY;
 #endif
     }
-    else if(comPort == HAL_USART2)
+    else if(huart == USART2)
     {
 #ifdef USE_UART2
         if(UART2RXDataLenth - 9 < lenth)
             return HAL_BUSY;
 #endif
     }
-//	if(CheckCrc(pbuff)!= HAL_OK)
-//		return HAL_CRCERROR;
+	if(CheckCrc(pbuff)!= HAL_OK)
+		return HAL_CRCERROR;
     return HAL_OK;
 }
 
@@ -141,8 +142,108 @@ void	UART_Initial(USART_TypeDef* huart, int buad)
 }
 
 
+/*******************************
+名称：UART_TransmitData_API();;
+功能：串口发送数据
+参数：UART_HandleTypeDef *huart串口结构体
+			const void* data外部接收数据指针
+			uint16_t datasize发送数据大小，防止溢出
+			PARAMETER sendmode 发送模式，具体参数见结构体
+返回：HAL_StatusTypeDef communication.h
+*******************************/
+HAL_StatusTypeDef TransmitData_API(USART_TypeDef* huart, const void* data, uint16_t datasize)
+{
+    uint16_t i, timeout;
+    uint8_t* pdata = (uint8_t*) data;
+//    USART_TypeDef* huart = USART1;
+    if(datasize == 0)
+        datasize = strlen((char*)pdata)+1;
 
-/*************全局函数定义******************/
+//		sendLen = datasize;
+//			memcpy(SendBuff,pdata,sendLen);
+
+//    if(comPort == HAL_USART1)
+//        huart = USART1;
+//    if(comPort == HAL_USART2)
+//        huart = USART2;
+
+    for(i = 0; i < datasize; i++)
+    {
+        USART_SendData(huart, pdata[i]);
+        timeout = 0;
+        while(USART_GetFlagStatus(huart, USART_FLAG_TXE) == RESET)
+        {
+            timeout++;
+            if(timeout == SystemCoreClock / 1000) //发送超时1ms
+                return HAL_TIMEOUT;
+
+#ifdef USE_IWDG
+            IWDG_ReloadCounter();
+#endif
+        }
+    }
+
+    return HAL_OK;
+}
+
+/*******************************
+名称：UART_TransmitData_SDSES()
+功能：串口发送数据，适用于神思，自动加入SDsEs,crc
+参数：UART_HandleTypeDef *huart串口结构体
+			uint32_t 长度，只是data长度,函数中自动加5
+			cmdr  命令
+			data  发送数据,不包含任何协议内容，只是data数据，或数组
+返回：HAL_StatusTypeDef communication.h
+*******************************/
+uint8_t SendBuff[512];
+/////注意，校验的时候没有data数据，只有长度，命令，
+HAL_StatusTypeDef TransmitData_SDSES(USART_TypeDef* huart, uint32_t len, uint16_t cmdr, uint8_t state, const void* data)
+{
+    uint16_t i, crc16 = 0, sendLen = 0;
+    uint8_t lenth[4];
+    uint8_t cmd[2];
+    uint8_t crc[2];
+    uint8_t* pdata = (uint8_t*) data;
+    if(len == 0)
+        len = strlen((char*)pdata);
+    //头 SDsEs 5
+    memcpy(SendBuff, HEAD, HEADSIZE);
+    sendLen += HEADSIZE;
+    //长度 4字节
+    len += 5;            //长度已加5
+    for(i = 0; i < 4; i++)
+    {
+        lenth[i] = (len >> ((3 - i) * 8)) & 0xff;
+    }
+    memcpy(SendBuff + sendLen, lenth, 4);
+    sendLen += 4;
+    //CMDR 2字节
+    cmd[0] = cmdr >> 8;
+    cmd[1] = cmdr & 0xff;
+    memcpy(SendBuff + sendLen, cmd, 2);
+    sendLen += 2;
+
+    //state 1字节
+    SendBuff[sendLen] = state;
+    sendLen++;
+
+    //data len字节
+    memcpy(SendBuff + sendLen, pdata, len - 5);
+    sendLen += len - 5;
+
+    //crc 2字节
+    for(i = 0; i < sendLen - 5; i++)
+    {
+        crc16 = crc16one(SendBuff[i + 5], crc16);
+    }
+    crc[0] = crc16 >> 8;
+    crc[1] = crc16 & 0xFF;
+    memcpy(SendBuff + sendLen, crc, 2);
+    sendLen += 2;
+    TransmitData_API(huart, SendBuff, sendLen);
+    return HAL_OK;
+}
+
 
 /*******************************
 名称：Main_Process();
@@ -196,7 +297,6 @@ void	UART_Initial(USART_TypeDef* huart, int buad)
 //	}
 //}
 
-
 /*******************************
 名称：ResultSend();
 功能：回复函数；
@@ -209,107 +309,4 @@ void	UART_Initial(USART_TypeDef* huart, int buad)
 //		TransmitData_SDSES(comPort,0,SDSCmd,OPSUCCESS,NULL);
 //}
 
-/*******************************
-名称：UART_TransmitData_API();;
-功能：串口发送数据
-参数：UART_HandleTypeDef *huart串口结构体
-			const void* data外部接收数据指针
-			uint16_t datasize发送数据大小，防止溢出
-			PARAMETER sendmode 发送模式，具体参数见结构体
-返回：HAL_StatusTypeDef communication.h
-*******************************/
-HAL_StatusTypeDef TransmitData_API(ComPort comPort, const void* data, uint16_t datasize)
-{
-    uint16_t i, timeout;
-    uint8_t* pdata = (uint8_t*) data;
-    USART_TypeDef* huart = USART1;
-    if(datasize == 0)
-        datasize = strlen((char*)pdata);
-
-//		sendLen = datasize;
-//			memcpy(SendBuff,pdata,sendLen);
-		
-    if(comPort == HAL_USART1)
-        huart = USART1;
-    if(comPort == HAL_USART2)
-        huart = USART2;
-		
-    for(i = 0; i < datasize; i++)
-    {
-        USART_SendData(huart, pdata[i]);
-        timeout = 0;
-        while(USART_GetFlagStatus(huart, USART_FLAG_TXE) == RESET)
-        {
-            timeout++;
-            if(timeout == SystemCoreClock / 1000) //发送超时1ms
-                return HAL_TIMEOUT;
-
-#ifdef USE_IWDG
-            IWDG_ReloadCounter();
-#endif
-        }
-    }
-
-    return HAL_OK;
-}
-
-
-/************************END******************************/
-/*******************************
-名称：UART_TransmitData_SDSES()
-功能：串口发送数据，适用于神思，自动加入SDsEs,crc
-参数：UART_HandleTypeDef *huart串口结构体
-			uint32_t 长度，只是data长度,函数中自动加5
-			cmdr  命令
-			data  发送数据,不包含任何协议内容，只是data数据，或数组
-返回：HAL_StatusTypeDef communication.h
-*******************************/
-uint8_t SendBuff[512];
-
-HAL_StatusTypeDef TransmitData_SDSES(ComPort comPort, uint32_t len, uint16_t cmdr, uint8_t state, const void* data)
-{
-    uint16_t i, crc16 = 0, sendLen = 0;
-    uint8_t lenth[4];
-    uint8_t cmd[2];
-    uint8_t crc[2];
-    uint8_t* pdata = (uint8_t*) data;
-    if(len == 0)
-        len = strlen((char*)pdata);
-    //头 SDsEs 5
-    memcpy(SendBuff, HEAD, HEADSIZE);
-    sendLen += HEADSIZE;
-    //长度 4字节
-    len += 5;            //长度已加5
-    for(i = 0; i < 4; i++)
-    {
-        lenth[i] = (len >> ((3 - i) * 8)) & 0xff;
-    }
-    memcpy(SendBuff + sendLen, lenth, 4);
-    sendLen += 4;
-    //CMDR 2字节
-    cmd[0] = cmdr >> 8;
-    cmd[1] = cmdr & 0xff;
-    memcpy(SendBuff + sendLen, cmd, 2);
-    sendLen += 2;
-
-    //state 1字节
-    SendBuff[sendLen] = state;
-    sendLen++;
-
-    //data len字节
-    memcpy(SendBuff + sendLen, pdata, len - 5);
-    sendLen += len - 5;
-
-    //crc 2字节
-    for(i = 0; i < sendLen - 5; i++)
-    {
-        crc16 = crc16one(SendBuff[i + 5], crc16);
-    }
-    crc[0] = crc16 >> 8;
-    crc[1] = crc16 & 0xFF;
-    memcpy(SendBuff + sendLen, crc, 2);
-    sendLen += 2;
-    TransmitData_API(comPort, SendBuff, sendLen);
-    return HAL_OK;
-}
 

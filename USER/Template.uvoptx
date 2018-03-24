@@ -82,17 +82,17 @@
         <Book>
           <Number>0</Number>
           <Title>Quick Start Guide (STM32F030-Discovery)</Title>
-          <Path>D:\KEILV5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Boards\ST\STM32F030-Discovery\Documents\32F030DISCOVERY_QSG.pdf</Path>
+          <Path>D:\ProgramFiles\Keil\Keil_v5_arm\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Boards\ST\STM32F030-Discovery\Documents\32F030DISCOVERY_QSG.pdf</Path>
         </Book>
         <Book>
           <Number>1</Number>
           <Title>Data Brief (STM32F030-Discovery)</Title>
-          <Path>D:\KEILV5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Boards\ST\STM32F030-Discovery\Documents\DM00092305.pdf</Path>
+          <Path>D:\ProgramFiles\Keil\Keil_v5_arm\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Boards\ST\STM32F030-Discovery\Documents\DM00092305.pdf</Path>
         </Book>
         <Book>
           <Number>2</Number>
           <Title>Schematics (STM32F030-Discovery)</Title>
-          <Path>D:\KEILV5\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Boards\ST\STM32F030-Discovery\Documents\MB1134.pdf</Path>
+          <Path>D:\ProgramFiles\Keil\Keil_v5_arm\ARM\PACK\Keil\STM32F0xx_DFP\1.5.0\Boards\ST\STM32F030-Discovery\Documents\MB1134.pdf</Path>
         </Book>
         <Book>
           <Number>3</Number>
@@ -176,9 +176,9 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>152</LineNumber>
+          <LineNumber>54</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218906</Address>
+          <Address>134222520</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -187,14 +187,14 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>C:\Users\Administrator\Desktop\xh_鍙戣。鏌?demo\stm32f030Template\USER\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Template\main.c\152</Expression>
+          <Expression>\\Template\main.c\54</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>86</LineNumber>
+          <LineNumber>103</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134218502</Address>
+          <Address>134218648</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -203,39 +203,24 @@
           <BreakIfRCount>1</BreakIfRCount>
           <Filename>C:\Users\Administrator\Desktop\xh_鍙戣。鏌?demo\stm32f030Template\USER\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\Template\main.c\86</Expression>
+          <Expression>\\Template\main.c\103</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>motor_number</ItemText>
+          <ItemText>UART2RevData[0]</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>motorState[0]</ItemText>
+          <ItemText>rs485buf[0]</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>motorState[1]</ItemText>
-        </Ww>
-        <Ww>
-          <count>3</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>processResult</ItemText>
-        </Ww>
-        <Ww>
-          <count>4</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>etc</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>printDelay</ItemText>
+          <ItemText>cmdr</ItemText>
         </Ww>
       </WatchWindow1>
       <MemoryWindow1>
@@ -554,7 +539,7 @@
 
   <Group>
     <GroupName>README</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

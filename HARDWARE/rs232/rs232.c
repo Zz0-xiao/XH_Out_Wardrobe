@@ -1,12 +1,10 @@
 #include "rs232.h"
-#include "communication.h"
 #include "timer.h"
-
 
 //串口超时全局函数
 #ifdef USE_UART1
 uint8_t UART1RevData[MAXCOMSIZE];
-int UART1Time_1ms = 0;
+uint16_t UART1Time_1ms = 1;
 uint16_t UART1RXDataLenth = 0;
 #endif
 
@@ -21,7 +19,7 @@ void USART1_IRQHandler(void)
         if(UART1RXDataLenth >= MAXCOMSIZE)
         {
             UART1RXDataLenth--;
-            UART1Time_1ms = 1000;//停止计时
+            UART1Time_1ms = 0;//停止计时
         }
         else
             UART1Time_1ms = 1;//启动计时

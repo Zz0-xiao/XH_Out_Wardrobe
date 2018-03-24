@@ -2,6 +2,7 @@
 #define __RS232_H__
 
 #include "stm32f0xx.h"
+#include "communication.h"
 
 #ifdef USE_UART1
 extern uint8_t UART1RevData[MAXCOMSIZE];
