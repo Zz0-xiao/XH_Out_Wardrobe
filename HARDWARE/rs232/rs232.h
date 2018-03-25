@@ -7,14 +7,14 @@
 #ifdef USE_UART1
 extern uint8_t UART1RevData[MAXCOMSIZE];
 extern uint16_t UART1Time_1ms;
-extern uint16_t UART1RXDataLenth;//UART1½ÓÊÜÊı¾İ³¤¶È
+extern uint16_t UART1RXDataLenth;//UART1æ¥å—æ•°æ®é•¿åº¦
 #endif
 
 
-//#define MAXREVSIZE 512		//¶¨Òå×î´ó½ÓÊÕ×Ö½ÚÊı 512
+//#define MAXREVSIZE 512		//å®šä¹‰æœ€å¤§æ¥æ”¶å­—èŠ‚æ•° 512
 
-//extern uint16_t UART1RXDataLenth£»//UART1½ÓÊÜÊı¾İ³¤¶È
-//HAL_StatusTypeDef UARTFaultStatus; //´®¿Ú±¨³¬Ê±
+//extern uint16_t UART1RXDataLenthï¼›//UART1æ¥å—æ•°æ®é•¿åº¦
+//HAL_StatusTypeDef UARTFaultStatus; //ä¸²å£æŠ¥è¶…æ—¶
 
 //extern uint8_t UART1RevData[MAXREVSIZE];
 //extern uint8_t UART2RevData[MAXREVSIZE];

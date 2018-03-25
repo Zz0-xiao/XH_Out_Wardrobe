@@ -8,7 +8,7 @@
 
 #include "communication.h"
 
-// TIM14,TIM16 PWM ÆµÂÊÉè¶¨
+// TIM14,TIM16 PWM é¢‘ç‡è®¾å®š
 #define INIHz 1000
 
 HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff);
@@ -57,7 +57,7 @@ int main(void)
 
             if(processResult == HAL_OK)
             {
-                processResult = Protocol_Process(UART2RevData);//Ğ­Òé´¦Àíº¯Êı
+                processResult = Protocol_Process(UART2RevData);//åè®®å¤„ç†å‡½æ•°
             }
 
             UART2RXDataLenth = 0;
@@ -67,10 +67,10 @@ int main(void)
 }
 
 /*******************************
-Ãû³Æ£ºProtocol_Process(uint8_t* pbuff,);
-¹¦ÄÜ£ºĞ­Òé´¦Àíº¯Êı
-²ÎÊı£ºĞ­ÒéÊı¾İ»º´æÇøpbuff
-·µ»Ø£º´¦Àí½á¹û£¬¿ÉÒÔÔÚcommunication.hÖĞÌí¼Ó
+åç§°ï¼šProtocol_Process(uint8_t* pbuff,);
+åŠŸèƒ½ï¼šåè®®å¤„ç†å‡½æ•°
+å‚æ•°ï¼šåè®®æ•°æ®ç¼“å­˜åŒºpbuff
+è¿”å›ï¼šå¤„ç†ç»“æœï¼Œå¯ä»¥åœ¨communication.hä¸­æ·»åŠ 
 *******************************/
 //53 44 73 45 73 00 00 00 09 21 01 ff ff 04 00 2a 82 da
 //53 44 73 45 73 00 00 00 09 20 02 ff ff 04 00 2a F4 5B
@@ -107,10 +107,10 @@ HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
 
 
 /*******************************
-Ãû³Æ£ºResultSend(uint8_t* pbuff, uint16_t buffSize)
-¹¦ÄÜ£ºÁ÷³Ì½á¹ûÉÏ´«
-²ÎÊı£ºpbuff ½ÓÊÕ»º³åÇø£¬ÓÃÓÚ·ÇÉñË¼Ğ­ÒéÉÏ´«»Ø¸´ÃüÁî£¬result ½á¹û
-·µ»Ø£ºnull
+åç§°ï¼šResultSend(uint8_t* pbuff, uint16_t buffSize)
+åŠŸèƒ½ï¼šæµç¨‹ç»“æœä¸Šä¼ 
+å‚æ•°ï¼špbuff æ¥æ”¶ç¼“å†²åŒºï¼Œç”¨äºéç¥æ€åè®®ä¸Šä¼ å›å¤å‘½ä»¤ï¼Œresult ç»“æœ
+è¿”å›ï¼šnull
 *******************************/
 //void ResultSend(uint8_t* pbuff, HAL_StatusTypeDef result)
 //{
@@ -130,7 +130,7 @@ HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
 //		{
 //			UART_TransmitData_SDSES(USART1,0,0xA100,OPSUCCESS,"");
 //		}
-//		if(result == HAL_TIMEOUT)//µç»úÔË×÷³¬Ê±
+//		if(result == HAL_TIMEOUT)//ç”µæœºè¿ä½œè¶…æ—¶
 //		{
 //			motorErrorFlag = MOTOR_OK;
 //			MotorDrive57(MOTORV,MOTOR_STOP);
@@ -140,7 +140,7 @@ HAL_StatusTypeDef Protocol_Process(uint8_t* pbuff)
 //		}
 //		if(result == HAL_DCTIMEOUT)
 //		{
-//			dataSDSES[0] = 0x01;//ÎŞ»õ
+//			dataSDSES[0] = 0x01;//æ— è´§
 //			UART_TransmitData_SDSES(USART1,1,0xA100,OPFAILED,dataSDSES);
 //		}
 //		if(result == HAL_CRCERROR)

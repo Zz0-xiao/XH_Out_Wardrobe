@@ -7,18 +7,18 @@
 #ifdef USE_UART2
 extern uint8_t UART2RevData[MAXCOMSIZE];
 extern uint16_t UART2Time_1ms;
-extern uint16_t UART2RXDataLenth;//UART1½ÓÊÜÊı¾İ³¤¶È
+extern uint16_t UART2RXDataLenth;//UART1æ¥å—æ•°æ®é•¿åº¦
 #endif
 
 
 
-//Ä£Ê½¿ØÖÆ
+//æ¨¡å¼æ§åˆ¶
 #define RS485EN_L()	 	  GPIO_ResetBits(GPIOF, GPIO_Pin_4)
 #define RS485EN_H()  		GPIO_SetBits(GPIOF, GPIO_Pin_4)
 
-void RS485_Init(uint32_t buad);//¹¦ÄÜ£º485³õÊ¼»¯£¬°üÀ¨Ê¹ÄÜ¶Ë
-HAL_StatusTypeDef RS485_Data_API(const void* data, uint16_t datasize);//¹¦ÄÜ£º485·¢ËÍÊı¾İ£¬Ö»×öÏÔÊ¾ÓÃ£¬²âÊÔÓÃ
-HAL_StatusTypeDef RS485_Data_SDSES(uint32_t len, uint16_t cmdr, uint8_t state, const void* data);//¹¦ÄÜ£º485·¢ËÍÊı¾İ£¬ÊÊÓÃÓÚÉñË¼£¬×Ô¶¯¼ÓÈëSDsEs,crc
+void RS485_Init(uint32_t buad);//åŠŸèƒ½ï¼š485åˆå§‹åŒ–ï¼ŒåŒ…æ‹¬ä½¿èƒ½ç«¯
+HAL_StatusTypeDef RS485_Data_API(const void* data, uint16_t datasize);//åŠŸèƒ½ï¼š485å‘é€æ•°æ®ï¼Œåªåšæ˜¾ç¤ºç”¨ï¼Œæµ‹è¯•ç”¨
+HAL_StatusTypeDef RS485_Data_SDSES(uint32_t len, uint16_t cmdr, uint8_t state, const void* data);//åŠŸèƒ½ï¼š485å‘é€æ•°æ®ï¼Œé€‚ç”¨äºç¥æ€ï¼Œè‡ªåŠ¨åŠ å…¥SDsEs,crc
 
 #endif
 
@@ -26,8 +26,8 @@ HAL_StatusTypeDef RS485_Data_SDSES(uint32_t len, uint16_t cmdr, uint8_t state, c
 
 //extern uint8_t RS485_RX_BUF[MAXCOMSIZE];
 //void RS485_Send_Data1(uint8_t *buf, uint8_t len);
-//extern uint8_t RS485_RX_BUF[64]; 		//½ÓÊÕ»º³å,×î´ó64¸ö×Ö½Ú
-//extern uint8_t RS485_RX_CNT;   			//½ÓÊÕµ½µÄÊı¾İ³¤¶È
+//extern uint8_t RS485_RX_BUF[64]; 		//æ¥æ”¶ç¼“å†²,æœ€å¤§64ä¸ªå­—èŠ‚
+//extern uint8_t RS485_RX_CNT;   			//æ¥æ”¶åˆ°çš„æ•°æ®é•¿åº¦
 
 
 

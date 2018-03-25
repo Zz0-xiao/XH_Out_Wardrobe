@@ -1,7 +1,7 @@
 #include "rs232.h"
 #include "timer.h"
 
-//´®¿Ú³¬Ê±È«¾Öº¯Êı
+//ä¸²å£è¶…æ—¶å…¨å±€å‡½æ•°
 #ifdef USE_UART1
 uint8_t UART1RevData[MAXCOMSIZE];
 uint16_t UART1Time_1ms = 1;
@@ -11,7 +11,7 @@ uint16_t UART1RXDataLenth = 0;
 void USART1_IRQHandler(void)
 {
     uint8_t tempdata;
-//	USART_ClearITPendingBit(USART1,USART_IT_ORE);//OREÖĞ¶ÏÇå³ı ·ñÔò´óÁ¿Êı¾İÊ±»á³öÏÖËÀ»ú
+//	USART_ClearITPendingBit(USART1,USART_IT_ORE);//OREä¸­æ–­æ¸…é™¤ å¦åˆ™å¤§é‡æ•°æ®æ—¶ä¼šå‡ºç°æ­»æœº
     if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
         tempdata = USART_ReceiveData(USART1);
@@ -19,10 +19,10 @@ void USART1_IRQHandler(void)
         if(UART1RXDataLenth >= MAXCOMSIZE)
         {
             UART1RXDataLenth--;
-            UART1Time_1ms = 0;//Í£Ö¹¼ÆÊ±
+            UART1Time_1ms = 0;//åœæ­¢è®¡æ—¶
         }
         else
-            UART1Time_1ms = 1;//Æô¶¯¼ÆÊ±
+            UART1Time_1ms = 1;//å¯åŠ¨è®¡æ—¶
     }
 }
 
@@ -34,20 +34,20 @@ void RS232_Init(uint32_t buad) {
 //void USART1_IRQHandler(void)
 //{
 //    uint8_t tempdata;
-//    USART_ClearITPendingBit(USART1, USART_IT_ORE); //OREÖĞ¶ÏÇå³ı ·ñÔò´óÁ¿Êı¾İÊ±»á³öÏÖËÀ»ú
+//    USART_ClearITPendingBit(USART1, USART_IT_ORE); //OREä¸­æ–­æ¸…é™¤ å¦åˆ™å¤§é‡æ•°æ®æ—¶ä¼šå‡ºç°æ­»æœº
 //    if(USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
 //    {
 //        tempdata = USART_ReceiveData(USART1);
 //        UART1RevData[UART1RXDataLenth] = tempdata;
 //        UART1RXDataLenth++;
-//        if(UART1RXDataLenth >= MAXREVSIZE)//½ÓÊÕ±¬Õ¨£¬
+//        if(UART1RXDataLenth >= MAXREVSIZE)//æ¥æ”¶çˆ†ç‚¸ï¼Œ
 //        {
 //            UART1RXDataLenth = UART1RXDataLenth - 1;
 //            UARTFaultStatus = HAL_UART1RXFULL;
-//            time3Usart1ms = 0;//Í£Ö¹¼ÆÊ±
+//            time3Usart1ms = 0;//åœæ­¢è®¡æ—¶
 //        }
 //        else
-//            time3Usart1ms = 1;//Æô¶¯¼ÆÊ±
+//            time3Usart1ms = 1;//å¯åŠ¨è®¡æ—¶
 //    }
 //}
 

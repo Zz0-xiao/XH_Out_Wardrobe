@@ -2,10 +2,10 @@
 #include "timer.h"
 #include "communication.h"
 /*******************************
-Ãû³Æ£ºSENSOR_Init();
-¹¦ÄÜ£º´«¸ÐÆ÷³õÊ¼»¯
-²ÎÊý: ÎÞ
-·µ»Ø£ºÎÞ
+åç§°ï¼šSENSOR_Init();
+åŠŸèƒ½ï¼šä¼ æ„Ÿå™¨åˆå§‹åŒ–
+å‚æ•°: æ— 
+è¿”å›žï¼šæ— 
 *******************************/
 void SENSOR_Init(void)
 {
@@ -26,10 +26,10 @@ void SENSOR_Init(void)
     GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
 /*******************************
-Ãû³Æ£ºSENSOR_Scan();
-¹¦ÄÜ£º¼ì²âÍÐÅÌÎ»ÖÃ
-²ÎÊý: ÎÞ
-·µ»Ø£ºÍÐÅÌÎ»ÖÃ
+åç§°ï¼šSENSOR_Scan();
+åŠŸèƒ½ï¼šæ£€æµ‹æ‰˜ç›˜ä½ç½®
+å‚æ•°: æ— 
+è¿”å›žï¼šæ‰˜ç›˜ä½ç½®
 *******************************/
 uint8_t SENSOR_Scan(void)
 {
@@ -53,10 +53,10 @@ uint8_t SENSOR_Scan(void)
 }
 
 ///*******************************
-//Ãû³Æ£ºSENSOR_Scan();
-//¹¦ÄÜ£º¼ì²âË®Æ½ÍÐÅÌÎ»ÖÃ
-//²ÎÊý: ÎÞ
-//·µ»Ø£ºÍÐÅÌÎ»ÖÃ
+//åç§°ï¼šSENSOR_Scan();
+//åŠŸèƒ½ï¼šæ£€æµ‹æ°´å¹³æ‰˜ç›˜ä½ç½®
+//å‚æ•°: æ— 
+//è¿”å›žï¼šæ‰˜ç›˜ä½ç½®
 //*******************************/
 //uint8_t HSENSOR_Scan(void)
 //{
@@ -78,10 +78,10 @@ uint8_t SENSOR_Scan(void)
 //}
 
 ///*******************************
-//Ãû³Æ£ºSENSOR_Scan();
-//¹¦ÄÜ£º¼ì²âÓÐÃ»ÓÐÖ½ÕÅ
-//²ÎÊý: ÎÞ
-//·µ»Ø£ºÊÇ·ñÓÐÖ½ÕÅ
+//åç§°ï¼šSENSOR_Scan();
+//åŠŸèƒ½ï¼šæ£€æµ‹æœ‰æ²¡æœ‰çº¸å¼ 
+//å‚æ•°: æ— 
+//è¿”å›žï¼šæ˜¯å¦æœ‰çº¸å¼ 
 //*******************************/
 //uint8_t INFRARE_Scan(void)
 //{
@@ -104,10 +104,10 @@ uint8_t SENSOR_Scan(void)
 
 
 /*******************************
-Ãû³Æ£ºSENSOR_Scan();
-¹¦ÄÜ£º¼ì²âË®Æ½Î»ÖÃÊÇ·ñ¸´Î»
-²ÎÊý: ÎÞ
-·µ»Ø£ºÊÇ·ñ¸´Î»
+åç§°ï¼šSENSOR_Scan();
+åŠŸèƒ½ï¼šæ£€æµ‹æ°´å¹³ä½ç½®æ˜¯å¦å¤ä½
+å‚æ•°: æ— 
+è¿”å›žï¼šæ˜¯å¦å¤ä½
 *******************************/
 //uint8_t RNFRARE_Scan(void)
 //{
