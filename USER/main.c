@@ -36,7 +36,7 @@ int main(void)
     Delay_init();
     TIM3_Initial();
     TIM14_Initial(INIHz);
-    TIM16_Initial(INIHz);
+    TIM16_Initial(2000);
 //    IWDG_Config();
 
     SENSOR_Init();
@@ -49,20 +49,21 @@ int main(void)
 
     while (1)
     {
-        if(UART2Time_1ms > 30)
-        {
-            UART2Time_1ms = 1;
+//        if(UART2Time_1ms > 30)
+//        {
+//            UART2Time_1ms = 0;
 
-            processResult = CheckProtocol(RS485, UART2RevData);
+//            processResult = CheckProtocol(RS485, UART2RevData);
 
-            if(processResult == HAL_OK)
-            {
-                processResult = Protocol_Process(UART2RevData);//协议处理函数
-            }
-
-            UART2RXDataLenth = 0;
-            BuffReset_API(UART2RevData, MAXCOMSIZE);
-        }
+//            if(processResult == HAL_OK)
+//            {
+//                processResult = Protocol_Process(UART2RevData);//协议处理函数
+//            }
+//            UART2RXDataLenth = 0;
+//            BuffReset_API(UART2RevData, MAXCOMSIZE);
+//        }
+        MotorStartStop(MOTORV, MOTOR_SLOW_STOP);
+        Delay_ms(10);
     }
 }
 

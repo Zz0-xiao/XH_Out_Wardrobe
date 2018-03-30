@@ -12,9 +12,9 @@
 //<s>协议头
 uint8_t HEAD[] =  "SDsEs";
 //<s>协议尾
-uint8_t END[]  =  "ETX";
+//uint8_t END[]  =  "ETX";
 uint8_t HEADSIZE = sizeof(HEAD) / sizeof(uint8_t) - 1;
-uint8_t ENDSIZE = sizeof(END) / sizeof(uint8_t) - 1;
+//uint8_t ENDSIZE = sizeof(END) / sizeof(uint8_t) - 1;
 
 /*************END***********************/
 HAL_StatusTypeDef CheckCrc(uint8_t *p)

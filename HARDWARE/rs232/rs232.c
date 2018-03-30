@@ -19,7 +19,7 @@ void USART1_IRQHandler(void)
         if(UART1RXDataLenth >= MAXCOMSIZE)
         {
             UART1RXDataLenth--;
-            UART1Time_1ms = 0;//停止计时
+            UART1Time_1ms = 500;//停止计时
         }
         else
             UART1Time_1ms = 1;//启动计时

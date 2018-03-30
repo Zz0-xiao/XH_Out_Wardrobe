@@ -36,7 +36,8 @@ typedef enum
 //	MOTOR_DISABLE,
     MOTOR_MOVE_FU,//电机正转
     MOTOR_MOVE_BD,//电机反转
-//	MOTOR_START,
+  	MOTOR_SLOW_START,//慢启动
+		MOTOR_SLOW_STOP,//慢停止
     MOTOR_STOP,
 //	MOTOR_HOLD,
 //	MOTORV_INI,
@@ -44,6 +45,8 @@ typedef enum
     MOTOR_OK,//允许电机工作
 //	MOTOR_BUSY,
 } MOTOR_STATE;
+
+
 
 //uint8_t motorState[2]; //记录电机状态，电机转向改变时不突变
 
@@ -58,7 +61,7 @@ void Motor_Init(void);
 *******************************/
 HAL_StatusTypeDef MotorDrive57(MOTOR_STATE motor_number, MOTOR_STATE motor_mode);
 
-void Put(uint8_t state);
+void MotorStartStop(MOTOR_STATE motor_number,MOTOR_STATE motor_mode);
 
 #endif
 

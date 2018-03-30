@@ -2,7 +2,7 @@
 #include "RS232.h"
 #include "delay.h"
 #include "communication.h"
-
+#include "timer.h"
 //电机错误状态标志，只能赋值MOTORV,MOTORH,MOTOR_OK没用上，预留
 //此标志置位则电机停止并不响应任何电机驱动指令
 uint8_t MotorErrorFlag = MOTOR_OK;
@@ -13,7 +13,6 @@ uint8_t motorState[2] = {MOTOR_STOP, MOTOR_STOP}; //记录电机状态，电机�
 
 //小电机转到下一标志计时
 // uint32_t timeOut[2] = {TIMEEND, TIMEEND};
-
 
 void Motor_Init(void)
 {
@@ -56,7 +55,6 @@ HAL_StatusTypeDef MotorDrive57(MOTOR_STATE motor_number, MOTOR_STATE motor_mode)
 //		timePeriod[MOTORH] = 23999;
 //		TIM_SetAutoreload(MOTORTIM[motor_number],timePeriod[motor_number]-1);//初始化定时器计数值
 //		TIM_SetCompare1(MOTORTIM[motor_number],(timePeriod[motor_number]-1)/2);
-
         if((motor_mode != MOTOR_STOP) && (motorState[motor_number] != MOTOR_STOP))
         {
             TIM_Cmd(MOTORTIM[motor_number], DISABLE); //停止电机
@@ -67,7 +65,6 @@ HAL_StatusTypeDef MotorDrive57(MOTOR_STATE motor_number, MOTOR_STATE motor_mode)
 
 //        if(timeOut[motor_number] == TIMEEND)
 //            timeOut[motor_number] = TIMESTART; //如果没有开启电机超时，则开启
-
         switch(motor_mode)
         {
         case MOTOR_STOP:
@@ -98,22 +95,56 @@ HAL_StatusTypeDef MotorDrive57(MOTOR_STATE motor_number, MOTOR_STATE motor_mode)
 }
 
 /*******************************
-名称：Introduction();
-功能：直流电机控制，推出纸张
-参数：STOP，RUN
+名称：MotorStartStop();
+功能：57电机慢启动以及慢结束，不声明
+参数：motor_number 电机号竖直电机MOTORV、水平电机MOTORH顺序不能颠倒
+			motor_mode   电机驱动方向见MOTOR_STATE
 返回：无
 *******************************/
+//uint16_t TIMKHz[] = {47999,47999/2,47999/3,47999/4,47999/5,47999/6,47999/7,57999/8,47999/9,4799};
+uint16_t TIMKHz[] = {1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000};
+uint8_t indexKHz = 9;//此标志位用于慢启动及减速
+uint16_t timePeriod[2] = {8000, 8000};	//PWM装载值
 
-void Put(uint8_t state)
+void MotorStartStop(MOTOR_STATE motor_number, MOTOR_STATE motor_mode)
 {
-    if(state == RUN)
+    static  uint16_t i = 0;
+    if(motor_mode == MOTOR_SLOW_START)
     {
-        PUT_H();
+        if(indexKHz <= 9)
+        {
+            i++;
+            if(i > 100)
+            {
+                i = 0;
+                timePeriod[motor_number] = TIMKHz[indexKHz];
+                TIM_SetAutoreload(MOTORTIM[motor_number], (uint16_t) (SystemCoreClock / (timePeriod[motor_number] * basePeroid)) - 1);
+                TIM_SetCompare1(MOTORTIM[motor_number], ((uint16_t) (SystemCoreClock / (timePeriod[motor_number] * basePeroid))) / 2);
+//				TIM_SetAutoreload(MOTORTIM[motor_number],timePeriod[motor_number]-1);
+//				TIM_SetCompare1(MOTORTIM[motor_number],(timePeriod[motor_number]-1)/2);
+                TIM_Cmd(MOTORTIM[motor_number], ENABLE);
+                indexKHz++;
+            }
+        }
     }
     else
-        PUT_L();
+    {
+        if(indexKHz > 0)
+        {
+            i++;
+            if(i > 100)
+            {
+                i = 0;
+                timePeriod[motor_number] = TIMKHz[indexKHz];
+                TIM_SetAutoreload(MOTORTIM[motor_number], (uint16_t) (SystemCoreClock / (timePeriod[motor_number] * basePeroid)) - 1);
+                TIM_SetCompare1(MOTORTIM[motor_number], ((uint16_t) (SystemCoreClock / (timePeriod[motor_number] * basePeroid))) / 2);
+//                TIM_SetAutoreload(MOTORTIM[motor_number], timePeriod[motor_number] - 1);
+//                TIM_SetCompare1(MOTORTIM[motor_number], (timePeriod[motor_number] - 1) / 2);
+                TIM_Cmd(MOTORTIM[motor_number], ENABLE);
+                indexKHz--;
+            }
+        }
+    }
 }
-
-
 
 
