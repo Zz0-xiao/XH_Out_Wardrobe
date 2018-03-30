@@ -398,21 +398,6 @@
           <GroupName>HARDWARE</GroupName>
           <Files>
             <File>
-              <FileName>motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\motor\motor.c</FilePath>
-            </File>
-            <File>
-              <FileName>sensor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\sensor\sensor.c</FilePath>
-            </File>
-            <File>
-              <FileName>timer.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\HARDWARE\timer\timer.c</FilePath>
-            </File>
-            <File>
               <FileName>communication.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\communication\communication.c</FilePath>
@@ -426,6 +411,21 @@
               <FileName>rs3485.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\HARDWARE\rs485\rs3485.c</FilePath>
+            </File>
+            <File>
+              <FileName>sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\sensor\sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\motor\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\timer\timer.c</FilePath>
             </File>
           </Files>
         </Group>

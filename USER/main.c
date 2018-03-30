@@ -36,7 +36,7 @@ int main(void)
     Delay_init();
     TIM3_Initial();
     TIM14_Initial(INIHz);
-    TIM16_Initial(2000);
+    TIM16_Initial(INIHz);
 //    IWDG_Config();
 
     SENSOR_Init();
@@ -62,7 +62,7 @@ int main(void)
 //            UART2RXDataLenth = 0;
 //            BuffReset_API(UART2RevData, MAXCOMSIZE);
 //        }
-        MotorStartStop(MOTORV, MOTOR_SLOW_STOP);
+        MotorStartStop(MOTORH, MOTOR_SLOW_STOP);
         Delay_ms(10);
     }
 }
